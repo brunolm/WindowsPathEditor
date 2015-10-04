@@ -1,0 +1,90 @@
+﻿<Window x:Class="WindowsPathEditor.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WindowsPathEditor"
+        xmlns:p="clr-namespace:WindowsPathEditor.Properties"
+        mc:Ignorable="d"
+        x:Name="view"
+        Height="{Binding Source={x:Static p:Settings.Default}, Path=Height, Mode=TwoWay}"
+        Width="{Binding Source={x:Static p:Settings.Default}, Path=Width, Mode=TwoWay}"
+        Left="{Binding Source={x:Static p:Settings.Default}, Path=Left, Mode=TwoWay}"
+        Top="{Binding Source={x:Static p:Settings.Default}, Path=Top, Mode=TwoWay}"
+        WindowState="{Binding Source={x:Static p:Settings.Default}, Path=WindowState, Mode=TwoWay}"
+        Topmost="{Binding Source={x:Static p:Settings.Default}, Path=AlwaysOnTop, Mode=TwoWay}"
+        Title="Windows Path Editor - By BrunoLM">
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <ToolBarTray>
+                <ToolBar HorizontalAlignment="Right">
+                    <Button Content="Save" Command="{Binding SaveCommand}" />
+                    <Separator />
+                    <Button Content="Discard all" Command="{Binding DiscardCommand}" />
+                </ToolBar>
+            </ToolBarTray>
+            
+            <DataGrid ItemsSource="{Binding Items}"
+                      Grid.Row="1"
+                      AutoGenerateColumns="False" IsReadOnly="False"
+                      CanUserAddRows="True" CanUserDeleteRows="True"
+                      >
+                <DataGrid.Resources>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Padding" Value="10" />
+                    </Style>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="MinHeight" Value="30" />
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="..."
+                                    Command="{Binding DataContext.PickPathCommand, ElementName=view}"
+                                    CommandParameter="{Binding}"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Path" CanUserSort="True" CanUserResize="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Path}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox x:Name="editPath" Text="{Binding Path, UpdateSourceTrigger=PropertyChanged
+                                , NotifyOnValidationError=True, ValidatesOnDataErrors=True}"
+                                     FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"
+                                     />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Delete" 
+                                    Command="{Binding DataContext.DeleteCommand, ElementName=view}"
+                                    CommandParameter="{Binding}"
+                                    />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </Grid>
+    </Grid>
+</Window>
