@@ -58,11 +58,13 @@ namespace WindowsPathEditor
             try
             {
                 Environment.SetEnvironmentVariable("PATH",
-                    String.Join(";", Items.Where(o => !String.IsNullOrWhiteSpace(o.Path)).Select(o => o.Path).Distinct().OrderBy(o => o)));
+                    String.Join(";", Items.Where(o => !String.IsNullOrWhiteSpace(o.Path)).Select(o => o.Path).Distinct().OrderBy(o => o)),
+                    EnvironmentVariableTarget.Machine);
             }
             catch
             {
                 MessageBox.Show("Could not change PATH! Try running as admin.", "Error while saving", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
 
             MessageBox.Show("Your path has been updated.", "Saved successfully!", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -76,6 +78,9 @@ namespace WindowsPathEditor
 
         private void PickPath(PathItem obj)
         {
+            if (obj == null)
+                return;
+
             var dialog = new OpenDialogView();
             var vm = (OpenDialogViewModel)dialog.DataContext;
 
